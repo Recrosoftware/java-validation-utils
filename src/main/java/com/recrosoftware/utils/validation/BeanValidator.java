@@ -33,7 +33,7 @@ public class BeanValidator {
         }});
     }
 
-    private Object bean;
+    private Validable bean;
     private Map<String, Field> beanFields;
 
     private List<ValidationError> validationErrors;
@@ -61,6 +61,11 @@ public class BeanValidator {
             return null;
         }
 
+        List<ValidationError> beanValidationErrors = this.bean.validate(asField(fieldPrefix, ""));
+        if (beanValidationErrors != null && !beanValidationErrors.isEmpty()) {
+            this.validationErrors.addAll(beanValidationErrors);
+        }
+
         this.fieldPrefix = fieldPrefix;
 
         Class<?> beanClass = this.bean.getClass();
@@ -81,6 +86,8 @@ public class BeanValidator {
 
             field.setAccessible(true);
             Object fieldValue = field.get(bean);
+
+            validateField(field, fieldName, fieldValue);
 
             // region Validate inner bean
             if (fieldValue instanceof Validable) {
@@ -107,8 +114,6 @@ public class BeanValidator {
                 }
             }
             // endregion
-
-            validateField(field, fieldName, fieldValue);
         }
 
         return validationErrors;

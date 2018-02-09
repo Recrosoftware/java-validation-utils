@@ -4,7 +4,7 @@ public class ValidationError {
     private final String field;
     private final String reason;
 
-    ValidationError(String field, String reason) {
+    public ValidationError(String field, String reason) {
         this.field = field;
         this.reason = reason;
     }

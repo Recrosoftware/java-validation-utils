@@ -9,6 +9,7 @@ import com.recrosoftware.utils.validation.annotation.Validate;
 import com.recrosoftware.utils.validation.exception.ValidationProcessingException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Tester {
@@ -36,6 +37,14 @@ public class Tester {
         @Range(to = 5)
         @Required
         List<Boolean> subProperty3;
+
+        @Override
+        public List<ValidationError> validate(String prefix) {
+            if (!"world!".equals(subProperty2)) {
+                return Collections.singletonList(new ValidationError(prefix + "sub_property_2", "invalid greeting"));
+            }
+            return null;
+        }
     }
 
     public static void main(String[] args) {
@@ -44,7 +53,7 @@ public class Tester {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (ValidationProcessingException ex) {
-            for(ValidationError error: ex.getValidationErrors()) {
+            for (ValidationError error : ex.getValidationErrors()) {
                 System.out.println(String.format("%s\t -> %s", error.getField(), error.getReason()));
             }
         }
